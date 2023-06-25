@@ -1,13 +1,15 @@
 #include "DxLib.h"
 #include"SceneManager.h"
+#include"PadInput.h"
+#include"Title.h"
 
 
-#define FRAMERATE 60.0 //フレームレート
+#define FRAMERATE 60 //フレームレート
 
 #define SCREEN_WIDTH 640 //画面サイズ（横）
 
 #define SCREEN_HEIGHT 480 //画面サイズ（縦）
-
+	
 /***********************************************
  * プログラムの開始
  ***********************************************/
@@ -29,25 +31,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
-	//SceneManager* sceneMng; //シーンマネージャー
+	SceneManager* sceneMng; //シーンマネージャー
 
-
-	//sceneMng = new SceneManager((AbstractScene*)new Title()); //シーンマネージャーにタイトルをセット
-
+	sceneMng = new SceneManager((AbstractScene*)new Title()); //シーンマネージャーにタイトルをセット
 
 	// ゲームループ
-	//while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr))
-	while((ProcessMessage() == 0))
+	while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr))
 	{
 
 		ClearDrawScreen();		// 画面の初期化
-		//PadInput::UpdateKey();
-		//sceneMng->Draw();
+		PadInput::UpdateKey();
+		sceneMng->Draw();
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 
 		//フレームレートの設定
-		dNextTime += 1.0 / FRAMERATE * 1000.0;
+		dNextTime += 1 / FRAMERATE * 1000;
 
 		if (dNextTime > GetNowCount())
 		{
@@ -58,6 +57,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		{ 
 			dNextTime = GetNowCount(); //補正
 		}		
+
+		//強制終了
+		if (PadInput::OnButton(XINPUT_BUTTON_BACK))
+		{
+			break;
+		}
+
 	}
 
 
