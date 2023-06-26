@@ -18,7 +18,8 @@ Title::Title()
 
 	select_menu = static_cast<int>(MENU::ONE_PERSON_PLAYER_GAME);
 
-	cursor_y = 0;
+	cursor_y = 0;	
+	title_image = LoadGraph("image/title.png");
 
 }
 
@@ -120,10 +121,11 @@ AbstractScene* Title::Update()
 //-----------------------------------
 void Title::Draw()const
 {
+
+	DrawGraph(0, 0, title_image, FALSE);
+
 	
 	SetFontSize(40);
-
-	DrawFormatString(400, 100, 0xFFFFFF, "タイトル");
 
 	DrawFormatString(550, 300, 0xFFFFFF, "一人");
 

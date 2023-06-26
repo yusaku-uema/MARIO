@@ -25,6 +25,9 @@ private:
 
     int stick_y;
 
+    //タイトル画像
+    int title_image;
+
 public:
 
     //コンストラクタ
