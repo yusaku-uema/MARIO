@@ -1,5 +1,6 @@
 #include "Title.h"
 #include"PadInput.h"
+#include"GameMain.h"
 #include"DxLib.h"
 
 #define FADE_TIME 300
@@ -98,7 +99,7 @@ AbstractScene* Title::Update()
 		switch (current_selection)
 		{
 		case MENU::ONE_PERSON_PLAYER_GAME:
-			//return new GameMain();
+			return new GameMain();
 			return this;
 			break;
 
