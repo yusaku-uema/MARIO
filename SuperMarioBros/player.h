@@ -27,5 +27,8 @@ public:
 	//•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ğÀ‘•
 	void Draw() const;
 
+	//ƒ}ƒŠƒI‚Ì‘€ì
+	void Operation();
+
 };
 
