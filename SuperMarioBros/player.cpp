@@ -13,15 +13,25 @@
 #define ACCELERATION_SPEED  0.1f
 #define ACCELERATION_MAX_SPEED 0.3f
 
+//ジャンプ力
+#define MINIUM_JUMP 12.0f
+#define INTERIM_JUMP 16.0f
+#define MAX_JUMP 6.5f
+
+//ジャンプ落下
+#define JUMP_FALL_SPEED 0.6f
+
 Player::Player()
 {
 	descent_speed = 0;
 	movement_speed = 0;
+	jumping_power = -INTERIM_JUMP;
 	location.x = 30;
 	location.y = 300;
 	area.height = 32;
 	area.width = 32;
 	stick_x = 0;
+	jump_flg = false;
 }
 
 Player::~Player()
@@ -32,10 +42,19 @@ Player::~Player()
 void Player::Update()
 {
 
-	//マリオ操作関係
+	//マリオ移動関係
 	Operation();
 
+	//ジャンプ受付
+	if (PadInput::OnButton(XINPUT_BUTTON_B) && jump_flg == false)
+	{
+		jump_flg = true;
+	}
 
+	if (jump_flg == true)
+	{
+		MarioJump();
+	}
 }
 
 void Player::Draw() const
@@ -128,6 +147,7 @@ void Player::Operation()
 		location.x += movement_speed;
 
 	}
+	//何もしていない時
 	else
 	{
 
@@ -147,5 +167,19 @@ void Player::Operation()
 
 		location.x += movement_speed;
 
+	}
+}
+
+void Player::MarioJump()
+{
+	descent_speed += JUMP_FALL_SPEED;
+	location.y += jumping_power + descent_speed;
+
+
+	//デバック
+	if (location.y > 460)
+	{
+		jump_flg = false;
+		descent_speed= 0;
 	}
 }
