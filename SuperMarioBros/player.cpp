@@ -1,6 +1,11 @@
 #include "player.h"
 #include"DxLib.h"
 #include <stdio.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+//アニメーション切り替え時間
+#define SWITCHING_TIME 6
 
 //最大ジャンプ力
 #define STRONG_JUMP 5.5
@@ -23,6 +28,12 @@
 
 Player::Player()
 {
+
+	LoadDivGraph("image/mario/mario.png", 9, 9, 1, 32, 32, tiny_mario);
+
+	animation = 0;
+	animation_time = 0;
+
 	descent_speed = 0;
 	movement_speed = 0;
 	jumping_power = -INTERIM_JUMP;
@@ -32,6 +43,7 @@ Player::Player()
 	area.width = 32;
 	stick_x = 0;
 	jump_flg = false;
+	left_move = false;
 }
 
 Player::~Player()
@@ -55,6 +67,35 @@ void Player::Update()
 	{
 		MarioJump();
 	}
+
+
+	if (movement_speed != 0)
+	{
+		if (++animation_time % SWITCHING_TIME == 0)
+		{
+			animation++;
+
+			if (animation > 3)
+			{
+				animation = 0;
+			}
+		}
+
+		if (movement_speed > 0)
+		{
+			//左に動いているのか
+			left_move = false;
+		}
+		else
+		{
+			//左に動いているのか
+			left_move = true;
+
+		}
+
+	}
+
+
 }
 
 void Player::Draw() const
@@ -65,6 +106,10 @@ void Player::Draw() const
 		GetColor(255, 255, 0), TRUE);
 
 	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
+
+	DrawRotaGraphF(location.x, location.y, 0.7f,
+		M_PI  / 180, tiny_mario[animation], TRUE, left_move);
+
 }
 
 void Player::Operation()
@@ -98,6 +143,7 @@ void Player::Operation()
 			//十字キーの右を押したら
 			if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT))
 			{
+
 				//最大加速速度より小さいか
 				if (movement_speed <= RUNNING_SPEED)
 				{
@@ -107,6 +153,7 @@ void Player::Operation()
 			}
 			else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
 			{
+
 				if (movement_speed > -RUNNING_SPEED)
 				{
 					movement_speed -= ACCELERATION_MAX_SPEED;
@@ -182,4 +229,5 @@ void Player::MarioJump()
 		jump_flg = false;
 		descent_speed= 0;
 	}
+
 }

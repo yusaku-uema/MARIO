@@ -6,6 +6,10 @@ class Player :public BoxCollider
 {
 private:
 	
+	int tiny_mario[9]; //チビマリオ
+	long long int animation_time; //アニメーション時間
+	int animation; //画像切り替え
+
 	int stick_x; //スティック移動
 	float jumping_power; //ジャンプ(上に向かう力)
 	float descent_speed; //降下スピード
@@ -13,6 +17,7 @@ private:
 	float direction_move; //移動する方向
 
 	bool jump_flg; //ジャンプしているのか
+	bool left_move; //左に動いているのか
 	
 
 public:
