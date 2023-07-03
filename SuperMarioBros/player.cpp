@@ -30,20 +30,26 @@ Player::Player()
 {
 
 	LoadDivGraph("image/mario/mario.png", 9, 9, 1, 32, 32, tiny_mario);
+	LoadDivGraph("Images/Enemy/Doragon/tktk_Other_4L.png", 3, 3, 1, 32, 64, power_up_image);
 
 	animation = 0;
 	animation_time = 0;
+	animation_count = 0;
+	power_up_animation = 0;
 
 	descent_speed = 0;
 	movement_speed = 0;
-	jumping_power = -INTERIM_JUMP;
+	b_button_press_time = 0;
+	jumping_power = -MINIUM_JUMP;
 	location.x = 30;
 	location.y = 300;
 	area.height = 32;
 	area.width = 32;
 	stick_x = 0;
+
 	jump_flg = false;
 	left_move = false;
+	power_up_flg = false;
 }
 
 Player::~Player()
@@ -107,6 +113,8 @@ void Player::Draw() const
 
 	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
 
+	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
+
 	DrawRotaGraphF(location.x, location.y, 0.7f,
 		M_PI  / 180, tiny_mario[animation], TRUE, left_move);
 
@@ -118,24 +126,65 @@ void Player::Operation()
 	stick_x = PadInput::GetLStick().x;
 
 	// スティックの感度
-	const int stick_sensitivity = 20000;
+	const int stick_sensitivity = 200;
 
 	//スティックの受付
 	if (stick_x > stick_sensitivity || stick_x < stick_sensitivity * -1)
 	{
 
-		// スティックが上に移動した場合
-		if (stick_x > 0)
+		//Aボタンを押しているのか
+		if (PadInput::OnPressed(XINPUT_BUTTON_A))
 		{
-
+			// スティックが上に移動した場合
+			if (stick_x > 0)
+			{
+				//最大加速速度より小さいか
+				if (movement_speed <= RUNNING_SPEED)
+				{
+					movement_speed += ACCELERATION_MAX_SPEED;
+				}
+			}
+			// スティックが下に移動した場合
+			else if (stick_x < 0)
+			{
+				if (movement_speed > -RUNNING_SPEED)
+				{
+					movement_speed -= ACCELERATION_MAX_SPEED;
+				}
+			}
 		}
-		// スティックが下に移動した場合
-		else if (stick_x < 0)
-		{
 
+		//Aボタンを押していないとき
+		else
+		{
+			// スティックが上に移動した場合
+			if (stick_x > 0)
+			{
+				if (movement_speed > WALKING_SPEED)
+				{
+					movement_speed -= ACCELERATION_SPEED;
+				}
+				else if (movement_speed <= WALKING_SPEED)
+				{
+					movement_speed += ACCELERATION_SPEED;
+				}
+			}
+			// スティックが下に移動した場合
+			else if (stick_x < 0)
+			{
+				if (movement_speed > -WALKING_SPEED)
+				{
+					movement_speed -= ACCELERATION_SPEED;
+				}
+				else if (movement_speed < -WALKING_SPEED)
+				{
+					movement_speed += ACCELERATION_SPEED;
+				}
+			}
 		}
 	}
-	else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
+	else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT)
+		|| stick_x > stick_sensitivity || stick_x < stick_sensitivity * -1)
 	{
 		//Aボタンを押しているのか
 		if (PadInput::OnPressed(XINPUT_BUTTON_A))
@@ -191,8 +240,6 @@ void Player::Operation()
 
 		}
 
-		location.x += movement_speed;
-
 	}
 	//何もしていない時
 	else
@@ -210,15 +257,31 @@ void Player::Operation()
 		{
 			movement_speed = 0;
 		}
-
-
-		location.x += movement_speed;
-
 	}
+
+	location.x += movement_speed;
+
 }
 
 void Player::MarioJump()
 {
+	//Bボタンを押している長さ
+	if (PadInput::OnPressed(XINPUT_BUTTON_B))
+	{
+		b_button_press_time += 0.1;
+	}
+
+	//Bボタンを押している時間によって飛ぶ力を変える
+	if (b_button_press_time < 0.6)
+	{
+		jumping_power = -MINIUM_JUMP;
+	}
+	else if (b_button_press_time >= 0.6 && b_button_press_time <1 )
+	{
+		jumping_power = -INTERIM_JUMP;
+	}
+
+	//ジャンプ開始
 	descent_speed += JUMP_FALL_SPEED;
 	location.y += jumping_power + descent_speed;
 
@@ -228,6 +291,19 @@ void Player::MarioJump()
 	{
 		jump_flg = false;
 		descent_speed= 0;
+		b_button_press_time = 0;
 	}
 
+}
+
+
+void Player::PowerUp()
+{
+	switch (animation_count)
+	{
+	case 0:
+		animation
+	default:
+		break;
+	}
 }
