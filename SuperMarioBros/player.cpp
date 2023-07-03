@@ -4,6 +4,14 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+//当たり判定の大きさ
+#define AMALL_MAIO_WIDTH 32
+#define AMALL_MAIO_HEIGHT 32
+
+#define SUPER_MARIO_WIDTH 64
+#define SUPER_MARIO_HEIGHT 64
+
+
 //アニメーション切り替え時間
 #define SWITCHING_TIME 6
 
@@ -50,6 +58,8 @@ Player::Player()
 	jump_flg = false;
 	left_move = false;
 	power_up_flg = false;
+
+	mario_state = MARIO_STATE::AMALL_MAIO;
 }
 
 Player::~Player()
@@ -59,6 +69,26 @@ Player::~Player()
 
 void Player::Update()
 {
+	//当たり判定の設定
+	switch (mario_state)
+	{
+	case MARIO_STATE::AMALL_MAIO:
+		//当たり判定の設定
+		area.height = AMALL_MAIO_HEIGHT;
+		area.width = AMALL_MAIO_WIDTH;
+		break;
+	case MARIO_STATE::SUPER_MARIO:
+		//ファイアマリオと一緒
+
+	case MARIO_STATE::FIRE_MARIO:
+		//当たり判定の設定
+		area.height = SUPER_MARIO_HEIGHT;
+		area.width = SUPER_MARIO_WIDTH;
+		break;
+	
+	default:
+		break;
+	}
 
 	//マリオ移動関係
 	Operation();
@@ -107,17 +137,34 @@ void Player::Update()
 void Player::Draw() const
 {
 
-	DrawBox(location.x - area.width / 2, location.y - area.height / 2,
-		location.x + area.width / 2, location.y + area.height / 2,
-		GetColor(255, 255, 0), TRUE);
+	switch (mario_state)
+	{
+	case MARIO_STATE::AMALL_MAIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, tiny_mario[animation], TRUE, left_move);
+
+		break;
+	case MARIO_STATE::SUPER_MARIO:
+		break;
+	case MARIO_STATE::FIRE_MARIO:
+		break;
+	case MARIO_STATE::STAR_MARIO:
+		break;
+	case MARIO_STATE::DEATH:
+		break;
+	default:
+		break;
+	}
 
 	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
 
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
-	DrawRotaGraphF(location.x, location.y, 0.7f,
-		M_PI  / 180, tiny_mario[animation], TRUE, left_move);
-
+	DrawBox(location.x - area.width / 2, location.y - area.height / 2,
+		location.x + area.width / 2, location.y + area.height / 2,
+		GetColor(255, 255, 0), TRUE);
+	
 }
 
 void Player::Operation()
@@ -302,7 +349,7 @@ void Player::PowerUp()
 	switch (animation_count)
 	{
 	case 0:
-		animation
+		animation;
 	default:
 		break;
 	}

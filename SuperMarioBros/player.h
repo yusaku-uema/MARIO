@@ -2,6 +2,17 @@
 #include"BoxCollider.h"
 #include"PadInput.h"
 
+
+enum class MARIO_STATE
+{
+	AMALL_MAIO,   //チビマリオ 
+	SUPER_MARIO, //スーパマリオ
+	FIRE_MARIO, //ファイアマリオ
+	STAR_MARIO, //スターマリオ
+	DEATH //死亡状態
+};
+
+
 class Player :public BoxCollider
 {
 private:
@@ -23,6 +34,9 @@ private:
 	bool jump_flg; //ジャンプしているのか
 	bool left_move; //左に動いているのか
 	bool power_up_flg; //チビマリオからスーパマリオに変化中なのか
+
+
+	MARIO_STATE mario_state; //マリオの状態
 	
 
 public:
