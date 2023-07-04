@@ -8,12 +8,13 @@
 #define AMALL_MAIO_WIDTH 32
 #define AMALL_MAIO_HEIGHT 32
 
-#define SUPER_MARIO_WIDTH 64
+#define SUPER_MARIO_WIDTH 32
 #define SUPER_MARIO_HEIGHT 64
 
 
 //アニメーション切り替え時間
 #define SWITCHING_TIME 6
+#define POWRT_UP_TIME 10
 
 //最大ジャンプ力
 #define STRONG_JUMP 5.5
@@ -38,7 +39,8 @@ Player::Player()
 {
 
 	LoadDivGraph("image/mario/mario.png", 9, 9, 1, 32, 32, tiny_mario);
-	LoadDivGraph("Images/Enemy/Doragon/tktk_Other_4L.png", 3, 3, 1, 32, 64, power_up_image);
+	LoadDivGraph("image/mario/dekamarimation.png", 3, 3, 1, 32, 64, power_up_image);
+	LoadDivGraph("image/mario/dekamario.png", 9, 9, 1, 32, 64, super_mario_image);
 
 	animation = 0;
 	animation_time = 0;
@@ -104,7 +106,7 @@ void Player::Update()
 		MarioJump();
 	}
 
-
+	//アニメーション
 	if (movement_speed != 0)
 	{
 		if (++animation_time % SWITCHING_TIME == 0)
@@ -131,11 +133,19 @@ void Player::Update()
 
 	}
 
+	if (PadInput::OnPressed(XINPUT_BUTTON_Y) || power_up_flg == true)
+	{
+		PowerUpAnimation();
+	}
 
 }
 
 void Player::Draw() const
 {
+
+	DrawBox(location.x - area.width / 2, location.y - area.height / 2,
+		location.x + area.width / 2, location.y + area.height / 2,
+		GetColor(255, 255, 0), TRUE);
 
 	switch (mario_state)
 	{
@@ -143,13 +153,24 @@ void Player::Draw() const
 
 		DrawRotaGraphF(location.x, location.y, 0.7f,
 			M_PI / 180, tiny_mario[animation], TRUE, left_move);
-
 		break;
 	case MARIO_STATE::SUPER_MARIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, super_mario_image[animation], TRUE, left_move);
+
 		break;
 	case MARIO_STATE::FIRE_MARIO:
 		break;
 	case MARIO_STATE::STAR_MARIO:
+		break;
+	case MARIO_STATE::CHANGE_SUPER_MARIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, power_up_image[power_up_animation], TRUE, left_move);
+
+		break;
+	case MARIO_STATE::CHANGE_FIRE_MARIO:
 		break;
 	case MARIO_STATE::DEATH:
 		break;
@@ -161,9 +182,6 @@ void Player::Draw() const
 
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
-	DrawBox(location.x - area.width / 2, location.y - area.height / 2,
-		location.x + area.width / 2, location.y + area.height / 2,
-		GetColor(255, 255, 0), TRUE);
 	
 }
 
@@ -344,13 +362,66 @@ void Player::MarioJump()
 }
 
 
-void Player::PowerUp()
+void Player::PowerUpAnimation()
 {
-	switch (animation_count)
+
+	//マリオの状態確認
+	if (mario_state == MARIO_STATE::AMALL_MAIO)
 	{
-	case 0:
-		animation;
-	default:
-		break;
+		mario_state = MARIO_STATE::CHANGE_SUPER_MARIO;
+		power_up_flg = true;
 	}
+	else if (mario_state == MARIO_STATE::SUPER_MARIO)
+	{
+		mario_state = MARIO_STATE::CHANGE_FIRE_MARIO;
+		power_up_flg = true;
+	}
+
+	//スーパマリオに変化
+	if (mario_state == MARIO_STATE::CHANGE_SUPER_MARIO)
+	{
+
+		if (animation_time % POWRT_UP_TIME == 0)
+		{
+			animation_count++;
+		}
+
+		switch (animation_count)
+		{
+		case 0:
+			power_up_animation = 0;
+			break;
+		case 1:
+			power_up_animation = 1;
+			break;
+		case 2:
+			power_up_animation = 0;
+			break;
+		case 3:
+			power_up_animation = 1;
+			break;
+		case 4:
+			power_up_animation = 2;
+			break;
+		case 5:
+			power_up_animation = 0;
+			break;
+		case 6:
+			power_up_animation = 2;
+			break;
+
+		case 8:
+			power_up_flg = false;
+			mario_state = MARIO_STATE::SUPER_MARIO;
+			power_up_animation = 0;
+			animation_count = 0;
+		default:
+			break;
+		}
+	}
+	else if (mario_state == MARIO_STATE::CHANGE_SUPER_MARIO)
+	{
+		
+	}
+
 }
