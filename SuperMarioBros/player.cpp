@@ -8,13 +8,14 @@
 #define AMALL_MAIO_WIDTH 32
 #define AMALL_MAIO_HEIGHT 32
 
-#define SUPER_MARIO_WIDTH 32
+#define SUPER_MARIO_WIDTH 36
 #define SUPER_MARIO_HEIGHT 64
 
 
 //アニメーション切り替え時間
 #define SWITCHING_TIME 6
 #define POWRT_UP_TIME 10
+#define FIRE_MARIO_TIME 5
 
 //最大ジャンプ力
 #define STRONG_JUMP 5.5
@@ -41,6 +42,14 @@ Player::Player()
 	LoadDivGraph("image/mario/mario.png", 9, 9, 1, 32, 32, tiny_mario);
 	LoadDivGraph("image/mario/dekamarimation.png", 3, 3, 1, 32, 64, power_up_image);
 	LoadDivGraph("image/mario/dekamario.png", 9, 9, 1, 32, 64, super_mario_image);
+	LoadDivGraph("image/mario/faiyamario.png", 9, 9, 1, 32, 64, fire_mario);
+	LoadDivGraph("image/mario/starsmallmario.png", 36, 9, 4, 32, 32, star_mario_tiny);
+	LoadDivGraph("image/mario/starmario.png", 36, 9, 4, 32, 64, star_mario);
+
+	fire_power_up[0] = 0;
+	fire_power_up[1] = 9;
+	fire_power_up[2] = 18;
+	fire_power_up[3] = 27;
 
 	animation = 0;
 	animation_time = 0;
@@ -78,6 +87,20 @@ void Player::Update()
 		//当たり判定の設定
 		area.height = AMALL_MAIO_HEIGHT;
 		area.width = AMALL_MAIO_WIDTH;
+
+		if (jump_flg == false)
+		{
+			//アニメーション
+			if (animation > 3)
+			{
+				animation = 0;
+			}
+		}
+		else
+		{
+			animation = 5;
+		}
+
 		break;
 	case MARIO_STATE::SUPER_MARIO:
 		//ファイアマリオと一緒
@@ -86,6 +109,25 @@ void Player::Update()
 		//当たり判定の設定
 		area.height = SUPER_MARIO_HEIGHT;
 		area.width = SUPER_MARIO_WIDTH;
+		
+		if (jump_flg == false)
+		{
+			//アニメーション
+			if (animation > 4)
+			{
+				animation = 0;
+			}
+
+			if (animation == 0)
+			{
+				animation = 2;
+			}
+		}
+		else
+		{
+			animation = 6;
+		}
+		
 		break;
 	
 	default:
@@ -107,16 +149,12 @@ void Player::Update()
 	}
 
 	//アニメーション
-	if (movement_speed != 0)
+	if (movement_speed != 0&& jump_flg == false)
 	{
 		if (++animation_time % SWITCHING_TIME == 0)
 		{
 			animation++;
 
-			if (animation > 3)
-			{
-				animation = 0;
-			}
 		}
 
 		if (movement_speed > 0)
@@ -132,6 +170,11 @@ void Player::Update()
 		}
 
 	}
+	else if(jump_flg == false)
+	{
+		animation = 0;
+	}
+	
 
 	if (PadInput::OnPressed(XINPUT_BUTTON_Y) || power_up_flg == true)
 	{
@@ -143,9 +186,9 @@ void Player::Update()
 void Player::Draw() const
 {
 
-	DrawBox(location.x - area.width / 2, location.y - area.height / 2,
+	/*DrawBox(location.x - area.width / 2, location.y - area.height / 2,
 		location.x + area.width / 2, location.y + area.height / 2,
-		GetColor(255, 255, 0), TRUE);
+		GetColor(255, 255, 0), TRUE);*/
 
 	switch (mario_state)
 	{
@@ -161,6 +204,8 @@ void Player::Draw() const
 
 		break;
 	case MARIO_STATE::FIRE_MARIO:
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, fire_mario[animation], TRUE, left_move);
 		break;
 	case MARIO_STATE::STAR_MARIO:
 		break;
@@ -171,6 +216,9 @@ void Player::Draw() const
 
 		break;
 	case MARIO_STATE::CHANGE_FIRE_MARIO:
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, star_mario[power_up_animation], TRUE, left_move);
+
 		break;
 	case MARIO_STATE::DEATH:
 		break;
@@ -381,7 +429,7 @@ void Player::PowerUpAnimation()
 	if (mario_state == MARIO_STATE::CHANGE_SUPER_MARIO)
 	{
 
-		if (animation_time % POWRT_UP_TIME == 0)
+		if (animation_time++ % POWRT_UP_TIME == 0)
 		{
 			animation_count++;
 		}
@@ -419,9 +467,67 @@ void Player::PowerUpAnimation()
 			break;
 		}
 	}
-	else if (mario_state == MARIO_STATE::CHANGE_SUPER_MARIO)
+
+	//ファイアマリオに変化する
+	else if (mario_state == MARIO_STATE::CHANGE_FIRE_MARIO)
 	{
-		
+		if (animation_time++ % FIRE_MARIO_TIME == 0)
+		{
+			animation_count++;
+		}
+
+		switch (animation_count)
+		{
+		case 0:
+			power_up_animation = fire_power_up[0] + animation;
+			break;
+		case 1:
+			power_up_animation = fire_power_up[1] + animation;
+			break;
+		case 2:
+			power_up_animation = fire_power_up[2] + animation;
+			break;
+		case 3:
+			power_up_animation = fire_power_up[3] + animation;
+			break;
+		case 4:
+			power_up_animation = fire_power_up[0] + animation;
+			break;
+		case 5:
+			power_up_animation = fire_power_up[1] + animation;
+			break;
+		case 6:
+			power_up_animation = fire_power_up[2] + animation;
+			break;
+		case 7:
+			power_up_animation = fire_power_up[3] + animation;
+			break;
+		case 8:
+			power_up_animation = fire_power_up[0] + animation;
+			break;
+		case 9:
+			power_up_animation = fire_power_up[1] + animation;
+			break;
+		case 10:
+			power_up_animation = fire_power_up[2] + animation;
+			break;
+		case 11:
+			power_up_animation = fire_power_up[3] + animation;
+			break;
+		case 12:
+			power_up_animation = fire_power_up[0] + animation;
+			break;
+		case 13:
+			power_up_animation = fire_power_up[1] + animation;
+			break;
+		case 15:
+			power_up_flg = false;
+			mario_state = MARIO_STATE::FIRE_MARIO;
+			power_up_animation = 0;
+			animation_count = 0;
+		default:
+			break;
+		}
 	}
 
 }

@@ -22,12 +22,18 @@ private:
 	int tiny_mario[9]; //チビマリオ
 	int power_up_image[3]; //チビマリオからスーパマリオ 
 	int super_mario_image[9]; //スーパマリオ
+	int fire_mario[8]; //ファイアマリオ
+	int star_mario_tiny[36]; //小さい状態でのスターマリオ
+	int star_mario[36]; //スーパマリオorファイアマリオの状態でのスターマリオ
+
 	long long int animation_time; //アニメーション時間
 	int animation; //画像切り替え
 	int animation_count; //画像切り替え
-	int power_up_animation; //チビマリオからスーパマリオに変化アニメーション
-
+	int power_up_animation; //パワーアップする時に使うアニメーション用変数
+	int fire_power_up[4]; //ファイアマリオになるときの使う要素数を収納する。
 	int stick_x; //スティック移動
+
+
 	float jumping_power; //ジャンプ(上に向かう力)
 	float descent_speed; //降下スピード
 	float movement_speed; //移動速度
