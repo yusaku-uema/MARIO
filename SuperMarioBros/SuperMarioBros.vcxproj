@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BackgroundStage.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="BackgroundStage.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />

@@ -128,7 +128,12 @@ void Player::Update()
 		area.width = AMALL_MAIO_WIDTH;
 
 		//アニメーション関係
-		if (jump_flg == false)
+		if (right_flg == true && movement_speed < 0 && jump_flg == false
+			|| left_flg == true && movement_speed > 0 && jump_flg == false)
+		{
+			animation = 4;
+		}
+		else if (jump_flg == false)
 		{
 			//アニメーション
 			if (animation > 3)
@@ -141,13 +146,6 @@ void Player::Update()
 			animation = 5;
 		}
 
-		if (right_flg == true && movement_speed < 0 
-			|| left_flg == true && movement_speed > 0)
-		{
-			animation = 4;
-		}
-
-
 		break;
 	case MARIO_STATE::SUPER_MARIO:
 		//ファイアマリオと一緒
@@ -156,10 +154,25 @@ void Player::Update()
 		//当たり判定の設定
 		area.height = SUPER_MARIO_HEIGHT;
 		area.width = SUPER_MARIO_WIDTH;
-		
+
+		//スティックの受付
+		if (stick_y < stick_sensitivity * -1)
+		{
+			animation = 1;
+		}
+		else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_DOWN))
+		{
+			animation = 1;
+		}
+
+		else if (right_flg == true && movement_speed < 0 && jump_flg == false
+			    || left_flg == true && movement_speed > 0 && jump_flg == false)
+		{
+			animation = 5;
+		}
 
 		//アニメーション関係
-		if (jump_flg == false)
+		else if (jump_flg == false)
 		{
 			//アニメーション
 			if (animation > 4)
@@ -177,23 +190,9 @@ void Player::Update()
 			animation = 6;
 		}
 
-		if (right_flg == true && movement_speed < 0
-			|| left_flg == true && movement_speed > 0)
-		{
-			animation = 5;
-		}
-		//スティックの受付
-		if ( stick_y < stick_sensitivity * -1)
-		{
-			animation = 1;
-		}
-		else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_DOWN) )
-		{
-			animation = 1;
-		}
-		
+
 		break;
-	
+
 	default:
 		break;
 	}
@@ -266,7 +265,7 @@ void Player::Draw() const
 
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
-	
+
 }
 
 void Player::Operation()
@@ -446,7 +445,7 @@ void Player::MarioJump()
 	{
 		jumping_power = -MINIUM_JUMP;
 	}
-	else if (b_button_press_time >= 0.6 && b_button_press_time <1 )
+	else if (b_button_press_time >= 0.6 && b_button_press_time < 1)
 	{
 		jumping_power = -INTERIM_JUMP;
 	}
@@ -460,7 +459,7 @@ void Player::MarioJump()
 	if (location.y > 460)
 	{
 		jump_flg = false;
-		descent_speed= 0;
+		descent_speed = 0;
 		b_button_press_time = 0;
 	}
 

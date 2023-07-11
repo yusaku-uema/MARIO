@@ -1,12 +1,14 @@
 #pragma once
 #include "AbstractScene.h"
 #include "player.h"
+#include "BackgroundStage.h"
 
 class GameMain :
     public AbstractScene
 {
 private:
     Player* player;
+    BackgroundStage* background_stage;
 
 public:
 
