@@ -1,6 +1,6 @@
 #pragma once
 
-
+//“–‚½‚è”»’è‚È‚µB
 class BackgroundStage
 {
 private:
