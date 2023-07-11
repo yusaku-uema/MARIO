@@ -67,6 +67,8 @@ Player::Player()
 	stick_x = 0;
 
 	jump_flg = false;
+	right_flg = false;
+	left_flg = false;
 	left_move = false;
 	power_up_flg = false;
 
@@ -80,6 +82,43 @@ Player::~Player()
 
 void Player::Update()
 {
+
+	// スティックの感度
+	const int stick_sensitivity = 200;
+
+	// スティックのX座標を取得
+	int stick_y = PadInput::GetLStick().y;
+
+	//アニメーション
+	if (movement_speed != 0 && jump_flg == false)
+	{
+		if (++animation_time % SWITCHING_TIME == 0)
+		{
+			animation++;
+
+		}
+
+		if (movement_speed > 0)
+		{
+			//左に動いているのか
+			left_move = false;
+		}
+		else
+		{
+			//左に動いているのか
+			left_move = true;
+
+		}
+
+	}
+	else if (jump_flg == false)
+	{
+		animation = 0;
+	}
+
+
+
+
 	//当たり判定の設定
 	switch (mario_state)
 	{
@@ -88,6 +127,7 @@ void Player::Update()
 		area.height = AMALL_MAIO_HEIGHT;
 		area.width = AMALL_MAIO_WIDTH;
 
+		//アニメーション関係
 		if (jump_flg == false)
 		{
 			//アニメーション
@@ -101,6 +141,13 @@ void Player::Update()
 			animation = 5;
 		}
 
+		if (right_flg == true && movement_speed < 0 
+			|| left_flg == true && movement_speed > 0)
+		{
+			animation = 4;
+		}
+
+
 		break;
 	case MARIO_STATE::SUPER_MARIO:
 		//ファイアマリオと一緒
@@ -110,6 +157,8 @@ void Player::Update()
 		area.height = SUPER_MARIO_HEIGHT;
 		area.width = SUPER_MARIO_WIDTH;
 		
+
+		//アニメーション関係
 		if (jump_flg == false)
 		{
 			//アニメーション
@@ -126,6 +175,21 @@ void Player::Update()
 		else
 		{
 			animation = 6;
+		}
+
+		if (right_flg == true && movement_speed < 0
+			|| left_flg == true && movement_speed > 0)
+		{
+			animation = 5;
+		}
+		//スティックの受付
+		if ( stick_y < stick_sensitivity * -1)
+		{
+			animation = 1;
+		}
+		else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_DOWN) )
+		{
+			animation = 1;
 		}
 		
 		break;
@@ -147,34 +211,6 @@ void Player::Update()
 	{
 		MarioJump();
 	}
-
-	//アニメーション
-	if (movement_speed != 0&& jump_flg == false)
-	{
-		if (++animation_time % SWITCHING_TIME == 0)
-		{
-			animation++;
-
-		}
-
-		if (movement_speed > 0)
-		{
-			//左に動いているのか
-			left_move = false;
-		}
-		else
-		{
-			//左に動いているのか
-			left_move = true;
-
-		}
-
-	}
-	else if(jump_flg == false)
-	{
-		animation = 0;
-	}
-	
 
 	if (PadInput::OnPressed(XINPUT_BUTTON_Y) || power_up_flg == true)
 	{
@@ -235,9 +271,6 @@ void Player::Draw() const
 
 void Player::Operation()
 {
-	// スティックのX座標を取得
-	stick_x = PadInput::GetLStick().x;
-
 	// スティックの感度
 	const int stick_sensitivity = 200;
 
@@ -248,18 +281,23 @@ void Player::Operation()
 		//Aボタンを押しているのか
 		if (PadInput::OnPressed(XINPUT_BUTTON_A))
 		{
-			// スティックが上に移動した場合
+			// スティックが右に移動した場合
 			if (stick_x > 0)
 			{
+				right_flg = true;
+				left_flg = false;
+
 				//最大加速速度より小さいか
 				if (movement_speed <= RUNNING_SPEED)
 				{
 					movement_speed += ACCELERATION_MAX_SPEED;
 				}
 			}
-			// スティックが下に移動した場合
+			// スティックが左に移動した場合
 			else if (stick_x < 0)
 			{
+				right_flg = false;
+				left_flg = true;
 				if (movement_speed > -RUNNING_SPEED)
 				{
 					movement_speed -= ACCELERATION_MAX_SPEED;
@@ -270,9 +308,12 @@ void Player::Operation()
 		//Aボタンを押していないとき
 		else
 		{
-			// スティックが上に移動した場合
+			// スティックが右に移動した場合
 			if (stick_x > 0)
 			{
+				right_flg = true;
+				left_flg = false;
+
 				if (movement_speed > WALKING_SPEED)
 				{
 					movement_speed -= ACCELERATION_SPEED;
@@ -282,9 +323,12 @@ void Player::Operation()
 					movement_speed += ACCELERATION_SPEED;
 				}
 			}
-			// スティックが下に移動した場合
+			// スティックが左に移動した場合
 			else if (stick_x < 0)
 			{
+				right_flg = false;
+				left_flg = true;
+
 				if (movement_speed > -WALKING_SPEED)
 				{
 					movement_speed -= ACCELERATION_SPEED;
@@ -306,6 +350,9 @@ void Player::Operation()
 			if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT))
 			{
 
+				right_flg = true;
+				left_flg = false;
+
 				//最大加速速度より小さいか
 				if (movement_speed <= RUNNING_SPEED)
 				{
@@ -315,6 +362,9 @@ void Player::Operation()
 			}
 			else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
 			{
+
+				right_flg = false;
+				left_flg = true;
 
 				if (movement_speed > -RUNNING_SPEED)
 				{
@@ -327,6 +377,9 @@ void Player::Operation()
 		{
 			if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT))
 			{
+
+				right_flg = true;
+				left_flg = false;
 
 				if (movement_speed > WALKING_SPEED)
 				{
@@ -341,6 +394,10 @@ void Player::Operation()
 			}
 			else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
 			{
+
+				right_flg = false;
+				left_flg = true;
+
 				if (movement_speed > -WALKING_SPEED)
 				{
 					movement_speed -= ACCELERATION_SPEED;

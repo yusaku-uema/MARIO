@@ -40,6 +40,8 @@ private:
 	float b_button_press_time; //Bボタンを押している時間
 
 	bool jump_flg; //ジャンプしているのか
+	bool left_flg; //左に行きたいのか
+	bool right_flg; //右に行きたいのか
 	bool left_move; //左に動いているのか
 	bool power_up_flg; //マリオがパワーアップアニメーションを行っているのか
 
