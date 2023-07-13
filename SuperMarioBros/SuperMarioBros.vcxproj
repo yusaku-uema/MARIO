@@ -165,6 +165,7 @@
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="BackgroundStage.h" />
     <ClInclude Include="BoxCollider.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="player.h" />

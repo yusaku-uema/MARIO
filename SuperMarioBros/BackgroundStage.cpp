@@ -8,6 +8,9 @@
 #define NUM_MAP_X 20 // 32x20=640
 #define NUM_MAP_Y 15 // 32x15=480
 
+//-----------------------------------
+// コンストラクタ
+//-----------------------------------
 BackgroundStage::BackgroundStage()
 {
 	image = LoadGraph("image/stage/sora.png");
@@ -20,16 +23,27 @@ BackgroundStage::BackgroundStage()
 	call_flg = false;
 }
 
+
+//-----------------------------------
+// デストラクタ
+//-----------------------------------
 BackgroundStage::~BackgroundStage()
 {
 
 }
 
-void BackgroundStage::Update()
+//-----------------------------------
+// 描画するのかしないのか
+//-----------------------------------
+void BackgroundStage::UpdateFlg(bool call_flg)
 {
-	
+	this->call_flg = call_flg;
 }
 
+
+//-----------------------------------
+// 空だけを描画
+//-----------------------------------
 void BackgroundStage::Draw() const
 {
 	if (call_flg == false)

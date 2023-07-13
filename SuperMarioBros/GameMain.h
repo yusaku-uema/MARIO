@@ -1,6 +1,7 @@
 #pragma once
 #include "AbstractScene.h"
 #include "player.h"
+#include"Stage.h"
 #include "BackgroundStage.h"
 
 class GameMain :
@@ -9,6 +10,7 @@ class GameMain :
 private:
     Player* player;
     BackgroundStage* background_stage;
+    Stage* stage;
 
 public:
 

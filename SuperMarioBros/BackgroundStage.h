@@ -7,19 +7,12 @@ private:
 
 	//‰æ‘œ
 	int image;
-	
-	//•`‰æ‚·‚éÀ•W
-	int x; 
-	int y;
 
 	//“®‚©‚È‚¢”wŒiƒf[ƒ^
 	int data[301] = {};
 		
 	//”wŒi‰æ‘œ‚ğŒÄ‚Ño‚·‚Ì‚©
 	bool call_flg;
-
-	//ˆ—’â~‚·‚é‚Ì‚©
-	bool processing_halt;
 
 public:
 
@@ -30,7 +23,7 @@ public:
 	~BackgroundStage();
 
 	//XV
-	void Update();
+	void UpdateFlg(bool call_flg);
 
 	//•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ğÀ‘•
 	void Draw() const;

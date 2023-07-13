@@ -6,6 +6,10 @@ XINPUT_STATE PadInput::input;
 Stick PadInput::r_stick;
 Stick PadInput::l_stick;
 
+
+//-----------------------------------
+// コントローラの情報を更新
+//-----------------------------------
 void PadInput::UpdateKey()
 {
 	// 入力キー取得

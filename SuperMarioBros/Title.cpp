@@ -1,13 +1,9 @@
 #include "Title.h"
 #include"PadInput.h"
 #include"GameMain.h"
+#include"Define.h"
 #include"DxLib.h"
 
-#define FADE_TIME 300
-
-#define STATE_Y 300
-
-#define EXIT_Y 400
 
 
 //-----------------------------------
