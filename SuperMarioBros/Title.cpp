@@ -19,7 +19,7 @@ Title::Title()
 
 	select_menu = static_cast<int>(MENU::ONE_PERSON_PLAYER_GAME);
 
-	cursor_y = 0;	
+	cursor_y = 0;
 	title_image = LoadGraph("image/title.png");
 
 }
@@ -67,6 +67,24 @@ AbstractScene* Title::Update()
 			}
 			// スティックが下に移動した場合
 			else if (stick_y < 0) {
+				// メニュー選択肢を一つ次に移動
+				select_menu = (select_menu + 1) % static_cast<int>(MENU::MENU_SIZE);
+			}
+
+			input_margin = 0;
+
+		}
+
+		if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_UP) || PadInput::OnPressed(XINPUT_BUTTON_DPAD_DOWN))
+		{
+
+			if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_UP))
+			{
+				// メニュー選択肢を一つ前に移動
+				select_menu = (select_menu - 1 + static_cast<int>(MENU::MENU_SIZE)) % static_cast<int>(MENU::MENU_SIZE);
+			}
+			else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_DOWN))
+			{
 				// メニュー選択肢を一つ次に移動
 				select_menu = (select_menu + 1) % static_cast<int>(MENU::MENU_SIZE);
 			}
@@ -125,7 +143,7 @@ void Title::Draw()const
 
 	DrawGraph(0, 0, title_image, FALSE);
 
-	
+
 	SetFontSize(40);
 
 	DrawFormatString(550, 300, 0xFFFFFF, "一人");
