@@ -74,6 +74,7 @@ Player::Player()
 	left_flg = false;
 	left_move = false;
 	power_up_flg = false;
+	hit_block_flg = false;
 
 	mario_state = MARIO_STATE::AMALL_MAIO;
 }
@@ -92,6 +93,8 @@ Player::~Player()
 //-----------------------------------
 void Player::Update()
 {
+
+	Location old_location = location;	//前の座標
 
 	// スティックの感度
 	const int stick_sensitivity = 200;
@@ -224,6 +227,15 @@ void Player::Update()
 	if (PadInput::OnPressed(XINPUT_BUTTON_Y) || power_up_flg == true)
 	{
 		PowerUpAnimation();
+	}
+
+	if (hit_block_flg == true)
+	{
+		//location = old_location;
+		hit_block_flg = false;
+		jump_flg = false;
+		descent_speed = 0;
+		b_button_press_time = 0;
 	}
 
 }
@@ -610,3 +622,9 @@ void Player::PowerUpAnimation()
 	}
 
 }
+
+void Player::SetHitBlockFlg(bool set_flg)
+{
+	hit_block_flg = set_flg;
+}
+

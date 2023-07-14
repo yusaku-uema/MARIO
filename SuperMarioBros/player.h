@@ -1,5 +1,6 @@
 #pragma once
 #include"BoxCollider.h"
+#include"Stage.h"
 #include"PadInput.h"
 
 
@@ -44,6 +45,7 @@ private:
 	bool right_flg; //右に行きたいのか
 	bool left_move; //左に動いているのか
 	bool power_up_flg; //マリオがパワーアップアニメーションを行っているのか
+	bool hit_block_flg; //マリオが障害物に当たったのか
 
 
 	MARIO_STATE mario_state; //マリオの状態
@@ -72,6 +74,10 @@ public:
 
 	//マリオパワーアップ,アニメーション
 	void PowerUpAnimation();
+
+	//障害物に当たったのか
+	void SetHitBlockFlg(bool set_flg);
+
 
 };
 

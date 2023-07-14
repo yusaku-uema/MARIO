@@ -16,10 +16,16 @@ struct Location
 
 class BoxCollider
 {
+protected:
+
+	Area area; //範囲
+	Location location; //中心座標
 
 public:
 	//BoxColliderとの当たり判定
 	bool HitBox(const class BoxCollider* box_collider) const;
+
+	bool HitBlock(const struct Block* block ) const;
 
 	//中心座標の取得
 	Location GetLocation()const;
@@ -27,9 +33,5 @@ public:
 	//半径の取得
 	Area GetArea()const;
 
-protected:
-
-	Area area; //範囲
-	Location location; //中心座標
 };
 

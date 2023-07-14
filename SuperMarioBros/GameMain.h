@@ -1,16 +1,20 @@
 #pragma once
 #include "AbstractScene.h"
 #include "player.h"
-#include"Stage.h"
+#include "Stage.h"
 #include "BackgroundStage.h"
 
 class GameMain :
     public AbstractScene
 {
 private:
+
+    
+    int block[NUM_MAP_X][NUM_MAP_X];
+
     Player* player;
     BackgroundStage* background_stage;
-    Stage* stage;
+    Stage* stage[NUM_MAP_Y][NUM_MAP_X];
 
 public:
 
