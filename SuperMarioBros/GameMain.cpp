@@ -55,6 +55,7 @@ AbstractScene* GameMain::Update()
 		{
 			if (stage[j][i] != nullptr)
 			{
+				//ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
 				if (player->HitBox(stage[j][i]))
 				{
 					player->SetHitBlockFlg(true);

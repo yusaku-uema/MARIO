@@ -247,9 +247,9 @@ void Player::Update()
 void Player::Draw() const
 {
 	////“–‚½‚è”»’è‚ÌƒeƒXƒg
-	/*DrawBox(location.x - area.width / 2, location.y - area.height / 2,
-		location.x + area.width / 2, location.y + area.height / 2,
-		GetColor(255, 255, 0), TRUE);*/
+	DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
+		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
+		GetColor(255, 255, 0), TRUE);
 
 	switch (mario_state)
 	{
