@@ -29,12 +29,13 @@
 #define ACCELERATION_MAX_SPEED 0.3f
 
 //ジャンプ力
-#define MINIUM_JUMP 12.0f
-#define INTERIM_JUMP 16.0f
-#define MAX_JUMP 6.5f
+#define MINIUM_JUMP 12.0f   //12.0
+#define INTERIM_JUMP 16.0f  //16.0
+#define MAX_JUMP 6.5f //6.5f
 
-//ジャンプ落下
-#define JUMP_FALL_SPEED 0.6f
+//落下
+#define FALL_SPEED 0.6f
+#define FALL_SPEED_MAX 5.5f
 
 //-----------------------------------
 // 初期化
@@ -60,11 +61,12 @@ Player::Player()
 	power_up_animation = 0;
 
 	descent_speed = 0;
+	jumping_descent_speed = 0;
 	movement_speed = 0;
 	b_button_press_time = 0;
-	jumping_power = -MINIUM_JUMP;
+	jumping_power = 0;
 	location.x = 30;
-	location.y = 300;
+	location.y = 30;
 	area.height = 32;
 	area.width = 32;
 	stick_x = 0;
@@ -93,8 +95,7 @@ Player::~Player()
 //-----------------------------------
 void Player::Update()
 {
-
-	Location old_location = location;	//前の座標
+	old_location = location;	//前の座標
 
 	// スティックの感度
 	const int stick_sensitivity = 200;
@@ -108,7 +109,6 @@ void Player::Update()
 		if (++animation_time % SWITCHING_TIME == 0)
 		{
 			animation++;
-
 		}
 
 		if (movement_speed > 0)
@@ -120,7 +120,6 @@ void Player::Update()
 		{
 			//左に動いているのか
 			left_move = true;
-
 		}
 
 	}
@@ -229,13 +228,49 @@ void Player::Update()
 		PowerUpAnimation();
 	}
 
-	if (hit_block_flg == true)
+	//if (hit_block_flg == true)
+	//{
+	//	//location = old_location;
+	//	hit_block_flg = false;
+	//	jump_flg = false;
+	//	descent_speed = 0;
+	//	b_button_press_time = 0;
+	//	//jumping_power = 0;
+	//	//printfDx("当たり");
+	//}
+	//else if (jump_flg != true)
+	//{
+	//	//ジャンプ落ちる速度別にした方がいい気がする
+	//	if (descent_speed < 9.5)
+	//	{
+	//		descent_speed += JUMP_FALL_SPEED;
+	//	}
+	//	location.y += descent_speed;
+	//}
+
+
+	if (hit_block_flg != true)
 	{
-		//location = old_location;
-		hit_block_flg = false;
-		jump_flg = false;
+		if (jump_flg)
+		{
+			//ジャンプ開始
+			jumping_descent_speed += FALL_SPEED;
+			location.y += jumping_power + jumping_descent_speed;
+		}
+		else
+		{
+			if (descent_speed < FALL_SPEED_MAX)
+			{
+				descent_speed += FALL_SPEED;
+			}
+			//落ちる
+			location.y += descent_speed;
+		}
+	}
+	else
+	{
 		descent_speed = 0;
-		b_button_press_time = 0;
+		jump_flg = false;
 	}
 
 }
@@ -249,7 +284,7 @@ void Player::Draw() const
 	////当たり判定のテスト
 	DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
 		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
-		GetColor(255, 255, 0), TRUE);
+		GetColor(255, 255, 0), false);
 
 	switch (mario_state)
 	{
@@ -482,12 +517,6 @@ void Player::MarioJump()
 	{
 		jumping_power = -INTERIM_JUMP;
 	}
-
-	//ジャンプ開始
-	descent_speed += JUMP_FALL_SPEED;
-	location.y += jumping_power + descent_speed;
-
-
 	//デバック
 	if (location.y > 460)
 	{
@@ -623,8 +652,46 @@ void Player::PowerUpAnimation()
 
 }
 
+void Player::Hit(const Stage* stage)
+{
+
+	//自分の当たり判定の範囲
+	float my_x[2];
+	float my_y[2];
+
+	//相手の当たり判定の範囲
+	float sub_x[2];
+	float sub_y[2];
+
+	//自分の当たり判定の範囲の計算
+	my_x[0] = location.x - (area.width / 2);
+	my_y[0] = location.y - (area.height / 2);
+	my_x[1] = my_x[0] + area.width;
+	my_y[1] = my_y[0] + area.height;
+
+	//相手の当たり判定の範囲の計算
+	sub_x[0] = stage->GetLocation().x;
+	sub_y[0] = stage->GetLocation().y;
+	sub_x[1] = sub_x[0] + stage->GetArea().width;
+	sub_y[1] = sub_y[0] + stage->GetArea().height;
+
+	if ((my_x[0] <= sub_x[1]) && (sub_x[0] <= my_x[1])
+		&& (my_y[0] <= sub_y[1]) && (sub_y[0] <= my_y[1])) //当たり判定
+	{
+		hit_block_flg = true;
+		location = old_location;
+	}
+
+}
+
 void Player::SetHitBlockFlg(bool set_flg)
 {
 	hit_block_flg = set_flg;
 }
+
+bool Player::GetHitBlockFlg()
+{
+	return hit_block_flg;
+}
+
 

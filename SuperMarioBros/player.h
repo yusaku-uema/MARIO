@@ -16,7 +16,7 @@ enum class MARIO_STATE
 };
 
 
-class Player :public BoxCollider
+class Player :public BoxCollider 
 {
 private:
 	
@@ -36,6 +36,7 @@ private:
 
 
 	float jumping_power; //ジャンプ(上に向かう力)
+	float jumping_descent_speed; //ジャンプ時の重力
 	float descent_speed; //降下スピード
 	float movement_speed; //移動速度
 	float b_button_press_time; //Bボタンを押している時間
@@ -49,7 +50,7 @@ private:
 
 
 	MARIO_STATE mario_state; //マリオの状態
-	
+	Location old_location ;	//前の座標
 
 public:
 
@@ -75,9 +76,12 @@ public:
 	//マリオパワーアップ,アニメーション
 	void PowerUpAnimation();
 
+	void Hit(const Stage*);
+
 	//障害物に当たったのか
 	void SetHitBlockFlg(bool set_flg);
 
+	bool GetHitBlockFlg();
 
 };
 

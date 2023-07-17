@@ -49,21 +49,23 @@ AbstractScene* GameMain::Update()
 
 	player->Update();
 
+	if (player->GetHitBlockFlg() == true)
+	{
+		player->SetHitBlockFlg(false);
+	}
+
 	for (int j = 0; j < NUM_MAP_Y; j++)
 	{
 		for (int i = 0; i < NUM_MAP_X; i++)
 		{
 			if (stage[j][i] != nullptr)
 			{
-				//ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
-				if (player->HitBox(stage[j][i]))
-				{
-					player->SetHitBlockFlg(true);
-				}
-
+				player->Hit(stage[j][i]);
 			}
 		}
 	}
+
+
 
 	return this;
 }

@@ -25,7 +25,7 @@ public:
 	//BoxCollider‚Æ‚Ì“–‚½‚è”»’è
 	bool HitBox(const class BoxCollider* box_collider) const;
 
-	bool HitBlock(const struct Block* block ) const;
+	bool HitBlock(const class BoxCollider* box_collider) const;
 
 	//’†SÀ•W‚Ìæ“¾
 	Location GetLocation()const;
