@@ -9,12 +9,14 @@ class GameMain :
 {
 private:
 
+    //ï`âÊç¿ïW
+    int rendering_coordinates_x;
     
-    int block[NUM_MAP_X][NUM_MAP_X];
+    int block[MAP_Y][MAP_MAX];
 
     Player* player;
     BackgroundStage* background_stage;
-    Stage* stage[NUM_MAP_Y][NUM_MAP_X];
+    Stage* stage[MAP_Y][MAP_MAX];
 
 public:
 

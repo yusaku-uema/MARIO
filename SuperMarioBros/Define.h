@@ -9,5 +9,6 @@
 #define  SIZE_MAP_X  32  //< マップチップXサイズ
 #define  SIZE_MAP_Y  32	//< マップチップYサイズ
 
-#define NUM_MAP_X 20 // 32x20=640
-#define NUM_MAP_Y 15 // 32x15=480
+#define MAP_MAX 40 //マップデータ
+#define MAP_X 20 // 32x20=640
+#define MAP_Y 15 // 32x15=480

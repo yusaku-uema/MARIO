@@ -30,9 +30,11 @@ void Stage::Update()
 
 void Stage::Draw() const
 {
+	//デバック
 	DrawBox(location.x ,location.y,
-		location.x + area.width / 2 , location.y +area.height,
+		location.x + area.width, location.y+area.height,
 		GetColor(255, 255, 0), false);
+	
 	DrawGraph(location.x, location.y, image, FALSE);
 }
 

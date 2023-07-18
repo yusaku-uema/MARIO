@@ -271,6 +271,12 @@ void Player::Update()
 	{
 		descent_speed = 0;
 		jump_flg = false;
+		jumping_descent_speed = 0;
+	}
+
+	if (location.x < area.width/2)
+	{
+		location.x = old_location.x;
 	}
 
 }
@@ -281,7 +287,7 @@ void Player::Update()
 //-----------------------------------
 void Player::Draw() const
 {
-	////当たり判定のテスト
+	////デバック
 	DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
 		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
 		GetColor(255, 255, 0), false);
@@ -322,8 +328,10 @@ void Player::Draw() const
 		break;
 	}
 
+	//デバック
 	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
 
+	//デバック
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
 

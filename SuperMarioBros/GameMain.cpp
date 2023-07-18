@@ -10,13 +10,16 @@ GameMain::GameMain()
 
 	FILE* fp;
 
-	//	読み込みモードでファイルを開く
-	fopen_s(&fp, "data/stage/test.txt", "r");
+	rendering_coordinates_x = 0;
 
-	for (int j = 0; j < NUM_MAP_Y; j++)
+	//	読み込みモードでファイルを開く
+	fopen_s(&fp, "data/stage/mario_test1.txt", "r");
+
+	for (int j = 0; j < MAP_Y; j++)
 	{
-		for (int i = 0; i < NUM_MAP_X; i++)
+		for (int i = 0; i < MAP_MAX; i++)
 		{
+			
 			fscanf_s(fp, "%d", &block[j][i]);
 			
 			if (block[j][i] > 0)
@@ -47,6 +50,8 @@ GameMain::~GameMain()
 AbstractScene* GameMain::Update()
 {
 
+	Location oldlocatio = player->GetLocation();
+	
 	player->Update();
 
 	if (player->GetHitBlockFlg() == true)
@@ -54,9 +59,14 @@ AbstractScene* GameMain::Update()
 		player->SetHitBlockFlg(false);
 	}
 
-	for (int j = 0; j < NUM_MAP_Y; j++)
+	if (player->GetLocation().x > oldlocatio.x)
 	{
-		for (int i = 0; i < NUM_MAP_X; i++)
+		rendering_coordinates_x++;
+	}
+
+	for (int j = 0; j < MAP_Y; j++)
+	{
+		for (int i = 0; i < MAP_X; i++)
 		{
 			if (stage[j][i] != nullptr)
 			{
@@ -74,9 +84,9 @@ void GameMain::Draw() const
 {
 	background_stage->Draw();
 
-	for (int j = 0; j < NUM_MAP_Y; j++)
+	for (int j = 0; j < MAP_Y; j++)
 	{
-		for (int i = 0; i < NUM_MAP_X; i++)
+		for (int i = 0; i < MAP_X; i++)
 		{
 			if (stage[j][i] != nullptr)
 			{
