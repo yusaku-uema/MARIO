@@ -58,8 +58,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			dNextTime = GetNowCount(); //ï‚ê≥
 		}		
 
-
-
 		//ã≠êßèIóπ
 		if (PadInput::OnButton(XINPUT_BUTTON_BACK))
 		{
@@ -67,7 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		}
 
 	}
-
 
 	return 0;
 }

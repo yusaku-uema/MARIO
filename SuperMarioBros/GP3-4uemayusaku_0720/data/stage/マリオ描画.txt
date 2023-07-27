@@ -1,0 +1,57 @@
+        LoadDivGraph("image/mario/mario.png", 9, 9, 1, 32, 32, tiny_mario);
+	LoadDivGraph("image/mario/dekamarimation.png", 3, 3, 1, 32, 64, power_up_image);
+	LoadDivGraph("image/mario/dekamario.png", 9, 9, 1, 32, 64, super_mario_image);
+	LoadDivGraph("image/mario/faiyamario.png", 9, 9, 1, 32, 64, fire_mario);
+	LoadDivGraph("image/mario/starsmallmario.png", 36, 9, 4, 32, 32, star_mario_tiny);
+	LoadDivGraph("image/mario/starmario.png", 36, 9, 4, 32, 64, star_mario);
+
+
+////デバック
+	DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
+		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
+		GetColor(255, 255, 0), false);
+
+	switch (mario_state)
+	{
+	case MARIO_STATE::AMALL_MAIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, tiny_mario[animation], TRUE, left_move);
+		break;
+	case MARIO_STATE::SUPER_MARIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, super_mario_image[animation], TRUE, left_move);
+
+		break;
+	case MARIO_STATE::FIRE_MARIO:
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, fire_mario[animation], TRUE, left_move);
+		break;
+	case MARIO_STATE::STAR_MARIO:
+		break;
+	case MARIO_STATE::CHANGE_SUPER_MARIO:
+
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, power_up_image[power_up_animation], TRUE, left_move);
+
+		break;
+	case MARIO_STATE::CHANGE_FIRE_MARIO:
+		DrawRotaGraphF(location.x, location.y, 0.7f,
+			M_PI / 180, star_mario[power_up_animation], TRUE, left_move);
+
+		break;
+	case MARIO_STATE::DEATH:
+		break;
+	default:
+		break;
+	}
+
+	//デバック
+	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
+
+	//デバック
+	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
+
+
+}

@@ -34,8 +34,10 @@ void Stage::Draw() const
 	DrawBox(location.x ,location.y,
 		location.x + area.width, location.y+area.height,
 		GetColor(255, 255, 0), false);
+
+	DrawFormatString(location.x, location.y, 0xFFFFFF, "%f", location.x);
 	
-	DrawGraph(location.x, location.y, image, FALSE);
+	//DrawGraph(location.x, location.y, image, FALSE);
 }
 
 

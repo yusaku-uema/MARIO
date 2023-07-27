@@ -128,7 +128,7 @@ AbstractScene* Title::Update()
 
 	}
 
-	return this;
+	return new GameMain();
 }
 
 //-----------------------------------

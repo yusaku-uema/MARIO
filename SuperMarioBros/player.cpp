@@ -259,6 +259,7 @@ void Player::Update()
 		}
 		else
 		{
+			b_button_press_time = 0;
 			if (descent_speed < FALL_SPEED_MAX)
 			{
 				descent_speed += FALL_SPEED;
@@ -269,6 +270,7 @@ void Player::Update()
 	}
 	else
 	{
+		//movement_speed = 0;
 		descent_speed = 0;
 		jump_flg = false;
 		jumping_descent_speed = 0;
@@ -334,6 +336,8 @@ void Player::Draw() const
 	//デバック
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
+	DrawFormatString(100, 200, 0xFFFFF, "%f", location.x);
+
 
 }
 
@@ -345,6 +349,8 @@ void Player::Operation()
 {
 	// スティックの感度
 	const int stick_sensitivity = 200;
+
+	stick_x = PadInput::GetLStick().x;
 
 	//スティックの受付
 	if (stick_x > stick_sensitivity || stick_x < stick_sensitivity * -1)
