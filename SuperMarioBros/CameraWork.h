@@ -4,17 +4,10 @@ class CameraWork
 {
 private:
 		
-	// 描画するマップ座標値
-	int map_draw_point_x; 
-	int map_draw_point_y;	
-
-	// 描画するマップチップの数
-	int draw_map_chip_num_x;	
-	int	draw_map_chip_num_y;	
-
-	// プレイヤーの位置
-	float player_x;
-	float player_y;
+	//スクロール系統？実験中
+	int camerax = 0;//カメラの左上座標
+	int charx;//自キャラ位置
+	int view_charx;//自キャラの表示位置。この座標にdrawする。
 
 public:
 
@@ -24,8 +17,14 @@ public:
 	//デストラクタ
 	~CameraWork();
 
-	//スクロール
-	void Scroll(int scroll_x, int scroll_y);
+	//更新
+	void Update(float player_location);
+
+	//キャラクタの描画する位置
+	int GetViewCharX();
+
+	//ステージ描画位置をずらす
+	int GetCameraX();
 
 };
 

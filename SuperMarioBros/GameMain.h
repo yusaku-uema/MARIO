@@ -2,6 +2,7 @@
 #include "AbstractScene.h"
 #include "player.h"
 #include "Stage.h"
+#include"CameraWork.h"
 #include "BackgroundStage.h"
 
 class GameMain :
@@ -12,10 +13,11 @@ private:
     //ï`âÊç¿ïW
     int rendering_coordinates_x;
     
-    int block[MAP_Y][MAP_MAX];
+    int block;
 
     Player* player;
     BackgroundStage* background_stage;
+    CameraWork* camerawork;
     Stage* stage[MAP_Y][MAP_MAX];
 
 public:

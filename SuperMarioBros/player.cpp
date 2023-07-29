@@ -55,6 +55,8 @@ Player::Player()
 	fire_power_up[2] = 18;
 	fire_power_up[3] = 27;
 
+
+	view_charx = 0;
 	animation = 0;
 	animation_time = 0;
 	animation_count = 0;
@@ -93,9 +95,11 @@ Player::~Player()
 //-----------------------------------
 // 更新
 //-----------------------------------
-void Player::Update()
+void Player::Update(int view_charx)
 {
 	old_location = location;	//前の座標
+
+	this->view_charx = view_charx; //座標更新
 
 	// スティックの感度
 	const int stick_sensitivity = 200;
@@ -290,37 +294,37 @@ void Player::Update()
 void Player::Draw() const
 {
 	////デバック
-	DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
+	/*DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
 		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
-		GetColor(255, 255, 0), false);
+		GetColor(255, 255, 0), false);*/
 
 	switch (mario_state)
 	{
 	case MARIO_STATE::AMALL_MAIO:
 
-		DrawRotaGraphF(location.x, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 0.7f,
 			M_PI / 180, tiny_mario[animation], TRUE, left_move);
 		break;
 	case MARIO_STATE::SUPER_MARIO:
 
-		DrawRotaGraphF(location.x, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 0.7f,
 			M_PI / 180, super_mario_image[animation], TRUE, left_move);
 
 		break;
 	case MARIO_STATE::FIRE_MARIO:
-		DrawRotaGraphF(location.x, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 0.7f,
 			M_PI / 180, fire_mario[animation], TRUE, left_move);
 		break;
 	case MARIO_STATE::STAR_MARIO:
 		break;
 	case MARIO_STATE::CHANGE_SUPER_MARIO:
 
-		DrawRotaGraphF(location.x, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 0.7f,
 			M_PI / 180, power_up_image[power_up_animation], TRUE, left_move);
 
 		break;
 	case MARIO_STATE::CHANGE_FIRE_MARIO:
-		DrawRotaGraphF(location.x, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 0.7f,
 			M_PI / 180, star_mario[power_up_animation], TRUE, left_move);
 
 		break;
@@ -336,7 +340,9 @@ void Player::Draw() const
 	//デバック
 	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
 
-	DrawFormatString(100, 200, 0xFFFFF, "%f", location.x);
+	DrawFormatString(100, 200, 0xFFFFF, "%d", view_charx);
+
+	DrawFormatString(300, 200, 0xFFFFF, "%f", location.x);
 
 
 }

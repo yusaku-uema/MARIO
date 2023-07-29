@@ -34,6 +34,9 @@ private:
 	int fire_power_up[4]; //ファイアマリオになるときの使う要素数を収納する。
 	int stick_x; //スティック移動
 
+	//スクロール系統？実験中
+	int view_charx;//自キャラの表示位置。この座標にdrawする。
+
 
 	float jumping_power; //ジャンプ(上に向かう力)
 	float jumping_descent_speed; //ジャンプ時の重力
@@ -62,7 +65,7 @@ public:
 	
 
 	//更新
-	void Update();
+	void Update(int view_charx);
 
 	//描画に関することを実装
 	void Draw() const;

@@ -11,6 +11,8 @@ private:
 	//ブロックの種類
 	int image;
 
+	int camerax;
+
 public:
 
 	//コンストラクタ
@@ -20,7 +22,7 @@ public:
 	~Stage();
 
 	//更新
-	void Update();
+	void Update(int camerax);
 
 	//描画に関することを実装
 	void Draw() const;

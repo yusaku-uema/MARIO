@@ -4,14 +4,7 @@
 CameraWork::CameraWork()
 {
 
-	map_draw_point_x = 0;
-	map_draw_point_y = 0;
-
-	draw_map_chip_num_x = 0;
-	draw_map_chip_num_y = 0;
-
-	player_x = 0;
-	player_y = 0;
+	
 
 }
 
@@ -20,13 +13,26 @@ CameraWork::~CameraWork()
 
 }
 
-void CameraWork::Scroll(int ScrollX, int ScrollY)
+void CameraWork::Update(float player_lcation)
 {
-	// 描画するマップチップの数をセット
-	draw_map_chip_num_x = 640 / SIZE_MAP_X;
-	draw_map_chip_num_y = 480 / SIZE_MAP_Y;
-
-	// 画面左上に描画するマップ座標をセット
-	map_draw_point_x = player_x - (draw_map_chip_num_x / 2 - 1);
-	map_draw_point_y = player_y - (draw_map_chip_num_y / 2 - 1);
+	//自キャラの座標の代入
+	charx = player_lcation;
+	//カメラ位置を計算
+	camerax = charx - SCREEN_WIDTH / 2;
+	//左右の補正
+	if (camerax < 0) camerax = 0;
+	if (camerax > (MAP_PIXEL_WIDTH - SCREEN_WIDTH)) camerax = (MAP_PIXEL_WIDTH - SCREEN_WIDTH);
+	//画面内の位置を求める。
+	view_charx = charx - camerax;
 }
+
+int CameraWork::GetViewCharX()
+{
+	return view_charx;
+}
+
+int CameraWork::GetCameraX()
+{
+	return camerax;
+}
+
