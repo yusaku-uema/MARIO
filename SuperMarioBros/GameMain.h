@@ -13,6 +13,7 @@ private:
     //•`‰æÀ•W
     int rendering_coordinates_x;
     
+    //
     int block;
 
     Player* player;

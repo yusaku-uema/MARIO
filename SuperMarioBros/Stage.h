@@ -11,12 +11,20 @@ private:
 	//ブロックの種類
 	int image;
 
+	int block[12];
+
+	int  animation;
+
+	long long int animation_count;
+
+	int type;
+
 	int camerax;
 
 public:
 
 	//コンストラクタ
-	Stage(float location_x,float location_y,float area_width,float area_height);
+	Stage(float location_x,float location_y,float area_width,float area_height ,int type);
 
 	//デストラクタ
 	~Stage();

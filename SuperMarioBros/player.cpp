@@ -232,26 +232,6 @@ void Player::Update(int view_charx)
 		PowerUpAnimation();
 	}
 
-	//if (hit_block_flg == true)
-	//{
-	//	//location = old_location;
-	//	hit_block_flg = false;
-	//	jump_flg = false;
-	//	descent_speed = 0;
-	//	b_button_press_time = 0;
-	//	//jumping_power = 0;
-	//	//printfDx("当たり");
-	//}
-	//else if (jump_flg != true)
-	//{
-	//	//ジャンプ落ちる速度別にした方がいい気がする
-	//	if (descent_speed < 9.5)
-	//	{
-	//		descent_speed += JUMP_FALL_SPEED;
-	//	}
-	//	location.y += descent_speed;
-	//}
-
 
 	if (hit_block_flg != true)
 	{
@@ -263,6 +243,7 @@ void Player::Update(int view_charx)
 		}
 		else
 		{
+			jumping_descent_speed = 0;
 			b_button_press_time = 0;
 			if (descent_speed < FALL_SPEED_MAX)
 			{
@@ -276,7 +257,7 @@ void Player::Update(int view_charx)
 	{
 		//movement_speed = 0;
 		descent_speed = 0;
-		jump_flg = false;
+		//jump_flg = false;
 		jumping_descent_speed = 0;
 	}
 
@@ -294,37 +275,37 @@ void Player::Update(int view_charx)
 void Player::Draw() const
 {
 	////デバック
-	/*DrawBox(location.x - (area.width / 2), location.y - (area.height / 2),
-		(location.x - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
-		GetColor(255, 255, 0), false);*/
+	DrawBox(view_charx - (area.width / 2), location.y - (area.height / 2),
+		(view_charx - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
+		GetColor(255, 255, 0), false);
 
 	switch (mario_state)
 	{
 	case MARIO_STATE::AMALL_MAIO:
 
-		DrawRotaGraphF(view_charx, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 1,
 			M_PI / 180, tiny_mario[animation], TRUE, left_move);
 		break;
 	case MARIO_STATE::SUPER_MARIO:
 
-		DrawRotaGraphF(view_charx, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 1,
 			M_PI / 180, super_mario_image[animation], TRUE, left_move);
 
 		break;
 	case MARIO_STATE::FIRE_MARIO:
-		DrawRotaGraphF(view_charx, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 1,
 			M_PI / 180, fire_mario[animation], TRUE, left_move);
 		break;
 	case MARIO_STATE::STAR_MARIO:
 		break;
 	case MARIO_STATE::CHANGE_SUPER_MARIO:
 
-		DrawRotaGraphF(view_charx, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 1,
 			M_PI / 180, power_up_image[power_up_animation], TRUE, left_move);
 
 		break;
 	case MARIO_STATE::CHANGE_FIRE_MARIO:
-		DrawRotaGraphF(view_charx, location.y, 0.7f,
+		DrawRotaGraphF(view_charx, location.y, 1,
 			M_PI / 180, star_mario[power_up_animation], TRUE, left_move);
 
 		break;
@@ -343,6 +324,8 @@ void Player::Draw() const
 	DrawFormatString(100, 200, 0xFFFFF, "%d", view_charx);
 
 	DrawFormatString(300, 200, 0xFFFFF, "%f", location.x);
+
+	DrawFormatString(400, 200, 0xFFFFFF, "%d", jump_flg);
 
 
 }
@@ -537,13 +520,6 @@ void Player::MarioJump()
 	{
 		jumping_power = -INTERIM_JUMP;
 	}
-	//デバック
-	if (location.y > 460)
-	{
-		jump_flg = false;
-		descent_speed = 0;
-		b_button_press_time = 0;
-	}
 
 }
 
@@ -699,6 +675,7 @@ void Player::Hit(const Stage* stage)
 		&& (my_y[0] <= sub_y[1]) && (sub_y[0] <= my_y[1])) //当たり判定
 	{
 		hit_block_flg = true;
+		jump_flg = false;
 		location = old_location;
 	}
 

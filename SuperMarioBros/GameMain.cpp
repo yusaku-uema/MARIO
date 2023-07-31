@@ -17,7 +17,7 @@ GameMain::GameMain()
 	camerawork = new CameraWork();
 
 	//	読み込みモードでファイルを開く
-	fopen_s(&fp, "data/stage/mario_test1.txt", "r");
+	fopen_s(&fp, "data/stage/mario_test2.txt", "r");
 
 	if (fp == nullptr)
 	{
@@ -33,7 +33,7 @@ GameMain::GameMain()
 			
 			if (block> 0)
 			{
-				stage[j][i] = new Stage(i, j, 32, 32);
+				stage[j][i] = new Stage(i, j, 32, 32,block);
 			}
 			else
 			{
