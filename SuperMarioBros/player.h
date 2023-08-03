@@ -50,6 +50,9 @@ private:
 	bool left_move; //左に動いているのか
 	bool power_up_flg; //マリオがパワーアップアニメーションを行っているのか
 	bool hit_block_flg; //マリオが障害物に当たったのか
+	bool fall_flg; //落下
+	bool side_flg; //横に当たっているのか
+	bool bust_flg; //頭に当たっているのか
 
 
 	MARIO_STATE mario_state; //マリオの状態
@@ -85,6 +88,8 @@ public:
 	void SetHitBlockFlg(bool set_flg);
 
 	bool GetHitBlockFlg();
+
+
 
 };
 

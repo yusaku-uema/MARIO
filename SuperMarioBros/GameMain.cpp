@@ -61,16 +61,12 @@ AbstractScene* GameMain::Update()
 
 	camerawork->Update(player->GetLocation().x);
 
-	Location oldlocatio = player->GetLocation();
+	Location oldlocation = player->GetLocation();
 	
 	player->Update(camerawork->GetViewCharX());
 
-	if (player->GetHitBlockFlg() == true)
-	{
-		player->SetHitBlockFlg(false);
-	}
 
-	if (player->GetLocation().x > oldlocatio.x)
+	if (player->GetLocation().x > oldlocation.x)
 	{
 		rendering_coordinates_x++;
 	}

@@ -1,8 +1,10 @@
+#define _USE_MATH_DEFINES
+#define NOMINMAX
 #include "player.h"
 #include"DxLib.h"
 #include <stdio.h>
-#define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm> 
 
 //当たり判定の大きさ
 #define AMALL_MAIO_WIDTH 32
@@ -30,11 +32,12 @@
 
 //ジャンプ力
 #define MINIUM_JUMP 12.0f   //12.0
-#define INTERIM_JUMP 16.0f  //16.0
+#define INTERIM_JUMP 17.0f  //16.0
 #define MAX_JUMP 6.5f //6.5f
 
 //落下
 #define FALL_SPEED 0.6f
+#define JUMP_FALL  0.9f
 #define FALL_SPEED_MAX 5.5f
 
 //-----------------------------------
@@ -76,9 +79,11 @@ Player::Player()
 	jump_flg = false;
 	right_flg = false;
 	left_flg = false;
-	left_move = false;
 	power_up_flg = false;
 	hit_block_flg = false;
+	fall_flg = false;
+	side_flg = false;
+	bust_flg = false;
 
 	mario_state = MARIO_STATE::AMALL_MAIO;
 }
@@ -108,19 +113,20 @@ void Player::Update(int view_charx)
 	int stick_y = PadInput::GetLStick().y;
 
 	//アニメーション
-	if (movement_speed != 0 && jump_flg == false)
+	if (jump_flg == false || movement_speed != 0)
 	{
-		if (++animation_time % SWITCHING_TIME == 0)
+		if (animation_time % SWITCHING_TIME == 0)
 		{
 			animation++;
+			++animation_time;
 		}
 
-		if (movement_speed > 0)
+		if (movement_speed > 0 && right_flg == true)
 		{
 			//左に動いているのか
 			left_move = false;
 		}
-		else
+		else if (movement_speed < 0)
 		{
 			//左に動いているのか
 			left_move = true;
@@ -182,7 +188,7 @@ void Player::Update(int view_charx)
 		}
 
 		else if (right_flg == true && movement_speed < 0 && jump_flg == false
-			    || left_flg == true && movement_speed > 0 && jump_flg == false)
+			|| left_flg == true && movement_speed > 0 && jump_flg == false)
 		{
 			animation = 5;
 		}
@@ -217,7 +223,7 @@ void Player::Update(int view_charx)
 	Operation();
 
 	//ジャンプ受付
-	if (PadInput::OnButton(XINPUT_BUTTON_B) && jump_flg == false)
+	if (PadInput::OnButton(XINPUT_BUTTON_B) && jump_flg == false && fall_flg == true)
 	{
 		jump_flg = true;
 	}
@@ -226,6 +232,13 @@ void Player::Update(int view_charx)
 	{
 		MarioJump();
 	}
+	else
+	{
+
+		jumping_descent_speed = 0;
+		b_button_press_time = 0;
+
+	}
 
 	if (PadInput::OnPressed(XINPUT_BUTTON_Y) || power_up_flg == true)
 	{
@@ -233,18 +246,20 @@ void Player::Update(int view_charx)
 	}
 
 
-	if (hit_block_flg != true)
+	if (hit_block_flg)
 	{
-		if (jump_flg)
+		hit_block_flg = false;
+	}
+
+	if (fall_flg)
+	{
+		fall_flg = false;
+		descent_speed = 0;
+	}
+	else
+	{
+		if (jump_flg == false && hit_block_flg == false)
 		{
-			//ジャンプ開始
-			jumping_descent_speed += FALL_SPEED;
-			location.y += jumping_power + jumping_descent_speed;
-		}
-		else
-		{
-			jumping_descent_speed = 0;
-			b_button_press_time = 0;
 			if (descent_speed < FALL_SPEED_MAX)
 			{
 				descent_speed += FALL_SPEED;
@@ -253,15 +268,10 @@ void Player::Update(int view_charx)
 			location.y += descent_speed;
 		}
 	}
-	else
-	{
-		//movement_speed = 0;
-		descent_speed = 0;
-		//jump_flg = false;
-		jumping_descent_speed = 0;
-	}
 
-	if (location.x < area.width/2)
+
+	//画面外にいかないように
+	if (location.x < area.width / 2)
 	{
 		location.x = old_location.x;
 	}
@@ -276,7 +286,7 @@ void Player::Draw() const
 {
 	////デバック
 	DrawBox(view_charx - (area.width / 2), location.y - (area.height / 2),
-		(view_charx - (area.width / 2))+ area.width, (location.y - (area.height / 2)) + area.height,
+		(view_charx - (area.width / 2)) + area.width, location.y + (area.height / 2),
 		GetColor(255, 255, 0), false);
 
 	switch (mario_state)
@@ -316,16 +326,16 @@ void Player::Draw() const
 	}
 
 	//デバック
-	DrawFormatString(100, 100, 0xFFFFFF, "%f", movement_speed);
+	DrawFormatString(100, 100, 0xFFFFFF, "%d 頭", bust_flg);
 
 	//デバック
-	DrawFormatString(100, 300, 0xFFFFFF, "%f", b_button_press_time);
+	DrawFormatString(100, 300, 0xFFFFFF, "%f", jumping_descent_speed);
 
-	DrawFormatString(100, 200, 0xFFFFF, "%d", view_charx);
+	DrawFormatString(100, 200, 0xFFFFF, "%d 横", side_flg);
 
 	DrawFormatString(300, 200, 0xFFFFF, "%f", location.x);
 
-	DrawFormatString(400, 200, 0xFFFFFF, "%d", jump_flg);
+	DrawFormatString(400, 200, 0xFFFFFF, "%d 落", fall_flg);
 
 
 }
@@ -344,6 +354,8 @@ void Player::Operation()
 	//スティックの受付
 	if (stick_x > stick_sensitivity || stick_x < stick_sensitivity * -1)
 	{
+
+		++animation_time;
 
 		//Aボタンを押しているのか
 		if (PadInput::OnPressed(XINPUT_BUTTON_A))
@@ -407,9 +419,10 @@ void Player::Operation()
 			}
 		}
 	}
-	else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT)
-		|| stick_x > stick_sensitivity || stick_x < stick_sensitivity * -1)
+	else if (PadInput::OnPressed(XINPUT_BUTTON_DPAD_RIGHT) || PadInput::OnPressed(XINPUT_BUTTON_DPAD_LEFT))
 	{
+		++animation_time;
+
 		//Aボタンを押しているのか
 		if (PadInput::OnPressed(XINPUT_BUTTON_A))
 		{
@@ -496,8 +509,13 @@ void Player::Operation()
 		}
 	}
 
-	location.x += movement_speed;
+	if (side_flg)
+	{
+		side_flg = false;
+		movement_speed = 0;
+	}
 
+	location.x += movement_speed;
 }
 
 //-----------------------------------
@@ -520,6 +538,11 @@ void Player::MarioJump()
 	{
 		jumping_power = -INTERIM_JUMP;
 	}
+
+	//ジャンプ開始
+	jumping_descent_speed += JUMP_FALL;
+
+	location.y += jumping_power + jumping_descent_speed;
 
 }
 
@@ -651,9 +674,83 @@ void Player::PowerUpAnimation()
 void Player::Hit(const Stage* stage)
 {
 
+	////自分の当たり判定の範囲
+	//float my_x[6];
+	//float my_y[6];
+
+	////相手の当たり判定の範囲
+	//float sub_x[2];
+	//float sub_y[2];
+
+	////自分の当たり判定の範囲の計算
+	//my_x[0] = location.x - (area.width / 2);
+	//my_y[0] = location.y  -(area.height / 2);
+	//my_x[1] = my_x[0] + area.width;
+	//my_y[1] = my_y[0] + area.height;
+
+	////	地面との当たり判定
+	//my_x[2] = location.x - (area.width / 2);
+	//my_y[2] = location.y - (area.height / 2);
+	//my_x[3] = my_x[2] + area.width;
+	//my_y[3] = my_y[2] + area.height;
+
+
+	////横との当たり判定
+
+	//if (right_flg)
+	//{
+	//	my_x[4] = (location.x ) - (area.width / 2);
+	//	my_x[5] = my_x[4] + (area.width + 2);
+	//}
+	//else
+	//{
+	//	my_x[4] = (location.x ) - (area.width / 2);
+	//	my_x[5] = my_x[4] + (area.width + 2);
+	//}
+
+	//my_y[4] = location.y;
+	//my_y[5] = my_y[4];
+
+
+	////相手の当たり判定の範囲の計算
+	//sub_x[0] = stage->GetLocation().x;
+	//sub_y[0] = stage->GetLocation().y;
+	//sub_x[1] = sub_x[0] + stage->GetArea().width;
+	//sub_y[1] = sub_y[0] + stage->GetArea().height;
+
+	//if ((my_x[0] <= sub_x[1]) && (sub_x[0] <= my_x[1])
+	//	&& (my_y[0] <= sub_y[1]) && (sub_y[0] <= my_y[1])) //当たり判定
+	//{
+	//	hit_block_flg = true;
+	//}
+
+	//if (hit_block_flg)
+	//{
+
+	//	//地面についているのか
+	//	if ((my_x[2] <= sub_x[1]) && (sub_x[0] <= my_x[3])
+	//		&& (my_y[2] <= sub_y[1]) && (sub_y[0] <= my_y[3]))
+	//	{
+	//		jump_flg = false;
+	//		fall_flg = true;
+	//	}
+
+	//	//横方向に当たっているのか
+	//	if ((my_x[4] <= sub_x[1]) && (sub_x[0] <= my_x[5])
+	//		&& (my_y[4] <= sub_y[1]) && (sub_y[0] <= my_y[5]))
+	//	{
+	//		side_flg = true;
+	//	}
+
+
+	//}
+
+
+
+
 	//自分の当たり判定の範囲
-	float my_x[2];
-	float my_y[2];
+	float my_x[8];
+	float my_y[8];
 
 	//相手の当たり判定の範囲
 	float sub_x[2];
@@ -665,18 +762,66 @@ void Player::Hit(const Stage* stage)
 	my_x[1] = my_x[0] + area.width;
 	my_y[1] = my_y[0] + area.height;
 
+	//	地面との当たり判定
+	my_x[2] = (location.x - 1) - (area.width / 2);
+	my_y[2] = location.y + ((area.height / 2) / 2);
+	my_x[3] = my_x[2] + area.width;
+	my_y[3] = location.y + (area.height / 2);
+
+
+	//横との当たり判定
+
+
+	my_x[4] = location.x - (area.width / 2);
+	my_y[4] = location.y - (area.height / 2);
+	my_x[5] = my_x[4] + area.width;
+	my_y[5] = my_y[4] + (area.height / 2);
+
+	//上半身の当たり判定
+	my_x[6] = location.x - (area.width / 2);
+	my_y[6] = location.y - (area.height / 2);
+	my_x[7] = my_x[6] + area.width;
+	my_y[7] = my_y[6] + 10;
+
+
 	//相手の当たり判定の範囲の計算
 	sub_x[0] = stage->GetLocation().x;
 	sub_y[0] = stage->GetLocation().y;
 	sub_x[1] = sub_x[0] + stage->GetArea().width;
 	sub_y[1] = sub_y[0] + stage->GetArea().height;
 
+
 	if ((my_x[0] <= sub_x[1]) && (sub_x[0] <= my_x[1])
 		&& (my_y[0] <= sub_y[1]) && (sub_y[0] <= my_y[1])) //当たり判定
 	{
 		hit_block_flg = true;
-		jump_flg = false;
-		location = old_location;
+
+
+		if ((my_x[6] <= sub_x[1]) && (sub_x[0] <= my_x[7])
+			&& (my_y[6] <= sub_y[1]) && (sub_y[0] <= my_y[7]))
+		{
+			jump_flg = false;
+			bust_flg = true;
+			fall_flg = false;
+			location.y = old_location.y;
+		}
+		//地面についているのか
+		else if ((my_x[2] <= sub_x[1]) && (sub_x[0] <= my_x[3])
+			&& (my_y[2] <= sub_y[1]) && (sub_y[0] <= my_y[3]))
+		{
+			jump_flg = false;
+			fall_flg = true;
+			location.y = sub_y[0]- (area.height / 2);
+		}
+
+		//横方向に当たっているのか
+		if ((my_x[4] <= sub_x[1]) && (sub_x[0] <= my_x[5])
+			&& (my_y[4] <= sub_y[1]) && (sub_y[0] <= my_y[5]))
+		{
+			side_flg = true;
+			location.x = old_location.x;
+		}
+
 	}
 
 }
@@ -684,11 +829,14 @@ void Player::Hit(const Stage* stage)
 void Player::SetHitBlockFlg(bool set_flg)
 {
 	hit_block_flg = set_flg;
+	fall_flg = set_flg;
 }
 
 bool Player::GetHitBlockFlg()
 {
 	return hit_block_flg;
 }
+
+
 
 
