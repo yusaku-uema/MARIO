@@ -12,8 +12,8 @@ private:
 
     //描画座標
     int rendering_coordinates_x;
-    
-    //
+   
+    //読み取ったデータ保存
     int block;
 
     Player* player;

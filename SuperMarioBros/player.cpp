@@ -23,11 +23,11 @@
 #define STRONG_JUMP 5.5
 
 //歩くスピード
-#define WALKING_SPEED 5.0f
-#define RUNNING_SPEED 8.0f
+#define WALKING_SPEED 3.5f
+#define RUNNING_SPEED 5.5f
 
 //加速スピード
-#define ACCELERATION_SPEED  0.1f
+#define ACCELERATION_SPEED  0.2f
 #define ACCELERATION_MAX_SPEED 0.3f
 
 //ジャンプ力
@@ -71,7 +71,7 @@ Player::Player()
 	b_button_press_time = 0;
 	jumping_power = 0;
 	location.x = 30;
-	location.y = 30;
+	location.y = 415;
 	area.height = 32;
 	area.width = 32;
 	stick_x = 0;
@@ -284,10 +284,6 @@ void Player::Update(int view_charx)
 //-----------------------------------
 void Player::Draw() const
 {
-	////デバック
-	DrawBox(view_charx - (area.width / 2), location.y - (area.height / 2),
-		(view_charx - (area.width / 2)) + area.width, location.y + (area.height / 2),
-		GetColor(255, 255, 0), false);
 
 	switch (mario_state)
 	{
@@ -324,19 +320,6 @@ void Player::Draw() const
 	default:
 		break;
 	}
-
-	//デバック
-	DrawFormatString(100, 100, 0xFFFFFF, "%d 頭", bust_flg);
-
-	//デバック
-	DrawFormatString(100, 300, 0xFFFFFF, "%f", jumping_descent_speed);
-
-	DrawFormatString(100, 200, 0xFFFFF, "%d 横", side_flg);
-
-	DrawFormatString(300, 200, 0xFFFFF, "%f", location.x);
-
-	DrawFormatString(400, 200, 0xFFFFFF, "%d 落", fall_flg);
-
 
 }
 
@@ -674,80 +657,6 @@ void Player::PowerUpAnimation()
 void Player::Hit(const Stage* stage)
 {
 
-	////自分の当たり判定の範囲
-	//float my_x[6];
-	//float my_y[6];
-
-	////相手の当たり判定の範囲
-	//float sub_x[2];
-	//float sub_y[2];
-
-	////自分の当たり判定の範囲の計算
-	//my_x[0] = location.x - (area.width / 2);
-	//my_y[0] = location.y  -(area.height / 2);
-	//my_x[1] = my_x[0] + area.width;
-	//my_y[1] = my_y[0] + area.height;
-
-	////	地面との当たり判定
-	//my_x[2] = location.x - (area.width / 2);
-	//my_y[2] = location.y - (area.height / 2);
-	//my_x[3] = my_x[2] + area.width;
-	//my_y[3] = my_y[2] + area.height;
-
-
-	////横との当たり判定
-
-	//if (right_flg)
-	//{
-	//	my_x[4] = (location.x ) - (area.width / 2);
-	//	my_x[5] = my_x[4] + (area.width + 2);
-	//}
-	//else
-	//{
-	//	my_x[4] = (location.x ) - (area.width / 2);
-	//	my_x[5] = my_x[4] + (area.width + 2);
-	//}
-
-	//my_y[4] = location.y;
-	//my_y[5] = my_y[4];
-
-
-	////相手の当たり判定の範囲の計算
-	//sub_x[0] = stage->GetLocation().x;
-	//sub_y[0] = stage->GetLocation().y;
-	//sub_x[1] = sub_x[0] + stage->GetArea().width;
-	//sub_y[1] = sub_y[0] + stage->GetArea().height;
-
-	//if ((my_x[0] <= sub_x[1]) && (sub_x[0] <= my_x[1])
-	//	&& (my_y[0] <= sub_y[1]) && (sub_y[0] <= my_y[1])) //当たり判定
-	//{
-	//	hit_block_flg = true;
-	//}
-
-	//if (hit_block_flg)
-	//{
-
-	//	//地面についているのか
-	//	if ((my_x[2] <= sub_x[1]) && (sub_x[0] <= my_x[3])
-	//		&& (my_y[2] <= sub_y[1]) && (sub_y[0] <= my_y[3]))
-	//	{
-	//		jump_flg = false;
-	//		fall_flg = true;
-	//	}
-
-	//	//横方向に当たっているのか
-	//	if ((my_x[4] <= sub_x[1]) && (sub_x[0] <= my_x[5])
-	//		&& (my_y[4] <= sub_y[1]) && (sub_y[0] <= my_y[5]))
-	//	{
-	//		side_flg = true;
-	//	}
-
-
-	//}
-
-
-
-
 	//自分の当たり判定の範囲
 	float my_x[8];
 	float my_y[8];
@@ -773,7 +682,7 @@ void Player::Hit(const Stage* stage)
 
 
 	my_x[4] = location.x - (area.width / 2);
-	my_y[4] = location.y - (area.height / 2);
+	my_y[4] = location.y - (area.height / 2) - 4;
 	my_x[5] = my_x[4] + area.width;
 	my_y[5] = my_y[4] + (area.height / 2);
 
@@ -811,7 +720,7 @@ void Player::Hit(const Stage* stage)
 		{
 			jump_flg = false;
 			fall_flg = true;
-			location.y = sub_y[0]- (area.height / 2);
+			location.y = sub_y[0] - (area.height / 2);
 		}
 
 		//横方向に当たっているのか

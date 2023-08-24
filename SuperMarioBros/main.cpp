@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
 
-	SetAlwaysRunFlag(true);		//ウィンドウが非アクティブでなくても処理を継続するか設定
+	SetAlwaysRunFlag(TRUE);		//ウィンドウが非アクティブでなくても処理を継続するか設定
 
 	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32);	//画面サイズの設定
 

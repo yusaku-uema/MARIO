@@ -128,7 +128,7 @@ AbstractScene* Title::Update()
 
 	}
 
-	return new GameMain();
+	return this;
 }
 
 //-----------------------------------
@@ -145,9 +145,6 @@ void Title::Draw()const
 	DrawFormatString(550, 300, 0xFFFFFF, "一人");
 
 	DrawFormatString(550, 400, 0xFFFFFF, "二人");
-
-	DrawFormatString(100, 100, 0xFFFFFF, "%d", stick_y);
-
 
 	//カーソル
 	DrawString(500, cursor_y, "■", GetColor(255, 255, 255));

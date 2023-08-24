@@ -4,7 +4,9 @@
 CameraWork::CameraWork()
 {
 
-	
+	view_charx = 0;
+	charx = 0;
+	camerax = 0;
 
 }
 

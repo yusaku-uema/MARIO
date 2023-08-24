@@ -58,10 +58,12 @@ GameMain::~GameMain()
 
 AbstractScene* GameMain::Update()
 {
-
+	//ƒJƒƒ‰
 	camerawork->Update(player->GetLocation().x);
 
+	//‘O‚ÌÀ•W
 	Location oldlocation = player->GetLocation();
+	
 	
 	player->Update(camerawork->GetViewCharX());
 
@@ -70,6 +72,7 @@ AbstractScene* GameMain::Update()
 	{
 		rendering_coordinates_x++;
 	}
+
 
 	for (int j = 0; j < MAP_Y; j++)
 	{

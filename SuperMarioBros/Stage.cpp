@@ -63,6 +63,8 @@ void Stage::Update(int camerax)
 
 void Stage::Draw() const
 {
+
+	
 	switch (type)
 	{
 	case 1:
@@ -95,11 +97,6 @@ void Stage::Draw() const
 	default:
 		break;
 	}
-
-	DrawBox(location.x - camerax, location.y,
-		location.x - camerax + area.width, location.y + area.height,
-		GetColor(255, 255, 0), false);
-
 
 }
 

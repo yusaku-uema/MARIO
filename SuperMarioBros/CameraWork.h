@@ -5,7 +5,7 @@ class CameraWork
 private:
 		
 	//スクロール系統？実験中
-	int camerax = 0;//カメラの左上座標
+	int camerax;//カメラの左上座標
 	int charx;//自キャラ位置
 	int view_charx;//自キャラの表示位置。この座標にdrawする。
 
